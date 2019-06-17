@@ -2,7 +2,7 @@ package com.dayannn.RSOI2.usersservice.service;
 
 import com.dayannn.RSOI2.usersservice.entity.User;
 import com.dayannn.RSOI2.usersservice.exception.UserNotFoundException;
-import com.dayannn.RSOI2.usersservice.repository.UsersRepository;
+import com.dayannn.RSOI2.usersservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,27 +11,27 @@ import java.util.List;
 
 @Service
 public class UsersServiceImpl implements UsersService{
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public UsersServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<User> getAllUsers() {
-        return usersRepository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User findUserById(Long id) throws UserNotFoundException{
-        return usersRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override
     public User findUserByLogin(String login) throws UserNotFoundException{
-        User user = usersRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login);
         if (user == null)
             throw  new UserNotFoundException(login);
         return user;
@@ -39,59 +39,59 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public void createUser(User user) {
-        usersRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
     public void deleteUser(Long id){
-        usersRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
 //    @Override
 //    public void setRating(Long id, Integer rating) throws UserNotFoundException{
-//        User user = usersRepository.findById(id)
+//        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new UserNotFoundException(id));
 //        user.setRating(rating);
-//        usersRepository.save(user);
+//        userRepository.save(user);
 //    }
 
 //    @Override
 //    public void increaseRating(Long id, Integer rating) throws UserNotFoundException{
-//        User user = usersRepository.findById(id)
+//        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new UserNotFoundException(id));
 //        user.setRating(user.getRating() + rating);
-//        usersRepository.save(user);
+//        userRepository.save(user);
 //    }
 //
 //    @Override
 //    public void increaseRating(Long id) throws UserNotFoundException{
-//        User user = usersRepository.findById(id)
+//        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new UserNotFoundException(id));
 //        user.setRating(user.getRating() + 1);
-//        usersRepository.save(user);
+//        userRepository.save(user);
 //    }
 //
 //    @Override
 //    public void decreaseRating(Long id, Integer rating) throws UserNotFoundException{
-//        User user = usersRepository.findById(id)
+//        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new UserNotFoundException(id));
 //        user.setRating(user.getRating() - rating);
-//        usersRepository.save(user);
+//        userRepository.save(user);
 //    }
 //
 //    @Override
 //    public void decreaseRating(Long id) throws UserNotFoundException{
-//        User user = usersRepository.findById(id)
+//        User user = userRepository.findById(id)
 //                .orElseThrow(() -> new UserNotFoundException(id));
 //        user.setRating(user.getRating() - 1);
-//        usersRepository.save(user);
+//        userRepository.save(user);
 //    }
 
     @Override
     public void setReviewsNum(Long id, int reviewsNum) throws UserNotFoundException {
-        User user = usersRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        usersRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override

@@ -4,19 +4,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "client")
-public class User {
+@Table(name = "rightholder")
+public class Rightholder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "external_id", unique = true)
-    private Long externalId;
 
     @Column(name = "login", unique = true)
     private String login;
@@ -27,19 +23,11 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Playlist> playlists;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rightholder")
+    private List<Artist> artists;
 
     public Long getId() {
         return id;
-    }
-
-    public Long getExternalId() {
-        return externalId;
-    }
-
-    public void setExternalId(Long externalId) {
-        this.externalId = externalId;
     }
 
     public String getLogin() {
@@ -66,12 +54,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
+    public List<Artist> getArtists() {
+        return artists;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
-        this.playlists = playlists;
+    public void setArtists(List<Artist> artists) {
+        this.artists = artists;
     }
 
     @Override
@@ -80,15 +68,14 @@ public class User {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        Rightholder that = (Rightholder) o;
 
         return new EqualsBuilder()
-                .append(id, user.id)
-                .append(externalId, user.externalId)
-                .append(login, user.login)
-                .append(name, user.name)
-                .append(lastName, user.lastName)
-                .append(playlists, user.playlists)
+                .append(id, that.id)
+                .append(login, that.login)
+                .append(name, that.name)
+                .append(lastName, that.lastName)
+                .append(artists, that.artists)
                 .isEquals();
     }
 
@@ -96,23 +83,21 @@ public class User {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(externalId)
                 .append(login)
                 .append(name)
                 .append(lastName)
-                .append(playlists)
+                .append(artists)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Rightholder{" +
                 "id=" + id +
-                ", externalId=" + externalId +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", playlists=" + playlists +
+                ", artists=" + artists +
                 '}';
     }
 }
