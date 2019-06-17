@@ -16,11 +16,11 @@ public class UsersServiceTest {
     @Mock
     UserRepository userRepository;
 
-    @Before
-    public void setUp(){
-        initMocks(this);
-        usersService = new UsersServiceImpl(userRepository);
-    }
+//    @Before
+//    public void setUp(){
+//        initMocks(this);
+//        usersService = new UsersServiceImpl(userRepository);
+//    }
 
 //    @Test
 //    public void shouldReturnAllUsers(){

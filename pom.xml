@@ -30,6 +30,7 @@
 		<module>reviews-service</module>
 		<module>users-service</module>
 		<module>auth-service</module>
+		<module>streaming-service</module>
 		<!--<module>frontend</module>-->
 	</modules>
 

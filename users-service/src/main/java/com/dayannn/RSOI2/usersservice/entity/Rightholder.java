@@ -20,9 +20,6 @@ public class Rightholder {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "last_name")
-    private String lastName;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "rightholder")
     private List<Artist> artists;
 
@@ -46,14 +43,6 @@ public class Rightholder {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public List<Artist> getArtists() {
         return artists;
     }
@@ -74,7 +63,6 @@ public class Rightholder {
                 .append(id, that.id)
                 .append(login, that.login)
                 .append(name, that.name)
-                .append(lastName, that.lastName)
                 .append(artists, that.artists)
                 .isEquals();
     }
@@ -85,7 +73,6 @@ public class Rightholder {
                 .append(id)
                 .append(login)
                 .append(name)
-                .append(lastName)
                 .append(artists)
                 .toHashCode();
     }
@@ -96,7 +83,6 @@ public class Rightholder {
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", artists=" + artists +
                 '}';
     }

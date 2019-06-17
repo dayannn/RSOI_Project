@@ -1,6 +1,6 @@
 package com.dayannn.RSOI2.usersservice.service;
 
-import com.dayannn.RSOI2.usersservice.entity.User;
+import com.dayannn.RSOI2.usersservice.entity.*;
 import com.dayannn.RSOI2.usersservice.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 
@@ -10,14 +10,25 @@ public interface UsersService {
     User findUserById(Long id) throws UserNotFoundException;
     User findUserByLogin(String login) throws UserNotFoundException;
     List<User> getAllUsers();
-    void createUser(User user);
+    User createUser(User user);
     void deleteUser(Long id);
-//    void setRating(Long id, Integer rating) throws UserNotFoundException;
-//    void increaseRating(Long id, Integer rating) throws UserNotFoundException;
-//    void increaseRating(Long id) throws UserNotFoundException;
-//    void decreaseRating(Long id, Integer rating) throws UserNotFoundException;
-//    void decreaseRating(Long id) throws UserNotFoundException;
-    void setReviewsNum(Long id, int reviewsNum) throws UserNotFoundException;
+    Rightholder createRightholder(Rightholder rightholder);
+    Rightholder findRightholderById(Long id);
+    List<Rightholder> getAllRightholders();
+    void deleteRightholder(Long id);
+    Playlist createPlaylist(Playlist playlist);
+    Playlist findPlaylistById(Long id);
+    void deletePlaylist(Long id);
+    Song addSong(Song song);
+    Song findSongById(Long id);
+    void deleteSong(Long id);
+    Artist createArtst(Artist artist);
+    Artist findArtistById(Long id);
+    void deleteArtist(Long id);
+    Album createAlbum(Album album);
+    Album findAlbumById(Long id);
+    void deleteAlbum(Long id);
+
     ResponseEntity healthCheck();
 }
 
