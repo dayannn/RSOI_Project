@@ -1,7 +1,6 @@
 package com.dayannn.RSOI2.streamingservice;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.content.commons.repository.Store;
 import org.springframework.content.fs.config.EnableFilesystemStores;

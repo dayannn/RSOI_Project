@@ -12,6 +12,10 @@
             <button class="btn btn-info btn-sm shadowed-button" type="submit">Войти</button>
             <br/>
             <label style="color: #cc0000">{{errorText}}</label>
+            <br/>
+            <router-link to="/register" >
+                Регистрация
+            </router-link>
         </form>
     </div>
 </template>

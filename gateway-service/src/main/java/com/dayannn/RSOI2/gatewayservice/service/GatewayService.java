@@ -26,5 +26,5 @@ public interface GatewayService {
     HttpResponse checkToken(String url, String token) throws IOException;
     String oauthGetCode(String host, String client_id, String redirect_uri, String response_type) throws IOException;
     String oauthExchangeCode(String host, String code, String redirect_uri, String client_cred) throws IOException;
-
+    ResponseEntity registerUser(String user) throws IOException;
 }

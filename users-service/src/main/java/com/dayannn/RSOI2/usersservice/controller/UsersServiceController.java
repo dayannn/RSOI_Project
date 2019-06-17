@@ -55,9 +55,9 @@ public class UsersServiceController {
     }
 
     @PostMapping(value = "/users")
-    public void createUser(@RequestBody User user){
-        usersService.createUser(user);
+    public User createUser(@RequestBody User user){
         logger.info("[POST] /users", user);
+        return usersService.createUser(user);
     }
 
     @GetMapping(value = "/users")

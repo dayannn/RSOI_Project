@@ -6,19 +6,19 @@ import store from './store' // your vuex store
 Vue.use(Router);
 
 const ifNotAuthenticated = (to, from, next) => {
-    if (!store.getters.isAuthenticated) {
-        next();
-        return
-    }
-    next('/')
+    // if (!store.getters.isAuthenticated) {
+    //     next();
+    //     return
+    // }
+    // next('/')
 };
 
 const ifAuthenticated = (to, from, next) => {
-    if (store.getters.isAuthenticated) {
-        next();
-        return
-    }
-    next('/login')
+    // if (store.getters.isAuthenticated) {
+    //     next();
+    //     return
+    // }
+    // next('/login')
 };
 
 export default new Router({
@@ -41,25 +41,31 @@ export default new Router({
             path: '/users',
             name: 'users',
             component: () => import('./views/Users.vue'),
-            beforeEnter: ifAuthenticated
+          //  beforeEnter: ifAuthenticated
         },
         {
             path: '/books',
             name: 'books',
             component: () => import('./views/Books.vue'),
-            beforeEnter: ifAuthenticated
+         //   beforeEnter: ifAuthenticated
         },
         {
             path: '/book/:id',
             name: 'book',
             component: () => import('./views/Book.vue'),
-            beforeEnter: ifAuthenticated
+          //  beforeEnter: ifAuthenticated
         },
         {
             path: '/login',
             name: 'login',
             component: () => import('./views/Login.vue'),
-            beforeEnter: ifNotAuthenticated
+           // beforeEnter: ifNotAuthenticated
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('./views/Register.vue'),
+           // beforeEnter: ifNotAuthenticated
         }
   ]
 })

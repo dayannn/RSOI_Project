@@ -225,4 +225,11 @@ public class GatewayController {
 
         return ResponseEntity.ok(r);
     }
+
+    @PostMapping(path = "/register")
+    public ResponseEntity registerUser(@RequestBody String user) throws IOException {
+        logger.info("[POST] /register");
+        gatewayService.registerUser(user);
+        return ResponseEntity.ok(null);
+    }
 }

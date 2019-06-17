@@ -43,11 +43,13 @@ public class GatewayServiceImpl implements GatewayService {
     final private String REVIEWS_SERVICE_URL = "http://localhost:8070";
     final private String BOOKS_SERVICE_URL = "http://localhost:8071";
     final private String USERS_SERVICE_URL = "http://localhost:8072";
+    final private String AUTH_SERVICE_URL = "http://localhost:8081";
 
     private String gatewayToken = "";
     private String booksToken = "";
     private String reviewsToken = "";
     private String usersToken = "";
+    private String authToken = "";
 
     private Jedis jedis = new Jedis("127.0.0.1", 6379);
     private JedisManager jedisManager = new JedisManager(jedis);
@@ -504,6 +506,57 @@ public class GatewayServiceImpl implements GatewayService {
         HttpResponse response = httpClient.execute(request);
 
         return EntityUtils.toString(response.getEntity());
+    }
+
+    @Override
+    public ResponseEntity registerUser(String user) throws IOException {
+        try {
+            JSONObject userJson = new JSONObject(user);
+            String username = userJson.getString("username");
+            String password = userJson.getString("password");
+            String role = userJson.getString("role");
+            String name = userJson.getString("name");
+            String lastName = userJson.getString("last_name");
+
+            if (!(role.equals("user") || role.equals("rightholder")))
+                return ResponseEntity.status(HttpStatus.SC_BAD_REQUEST).body("bad role");
+
+            HttpPost request = new HttpPost(AUTH_SERVICE_URL + "/user");
+            JSONObject userToSave = new JSONObject();
+            userToSave.put("userName", username);
+            userToSave.put("password", password);
+            userToSave.put("role", role);
+            userToSave.put("enabled", 1);
+            StringEntity entity = new StringEntity(userToSave.toString());
+
+            request.addHeader("content-type", "application/json");
+            request.setEntity(entity);
+            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            HttpResponse response = httpClient.execute(request);
+
+
+            JSONObject responseEntity = new JSONObject(EntityUtils.toString(response.getEntity()));
+            Long externalId = responseEntity.getLong("id");
+            userToSave.put("login", username);
+            userToSave.put("externalId", externalId);
+            userToSave.remove("role");
+            userToSave.remove("enabled");
+            userToSave.put("name", name);
+            userToSave.put("lastName", lastName);
+
+            HttpPost request2 = new HttpPost(USERS_SERVICE_URL + "/users/");
+            entity = new StringEntity(userToSave.toString());
+            request2.addHeader("content-type", "application/json");
+            request2.setEntity(entity);
+            HttpResponse response2 = authAndExecute(USERS_SERVICE_URL, request2, usersToken);
+
+            response.getStatusLine();
+
+        } catch (JSONException ex){
+            return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).body(jsonParsingError());
+        }
+
+        return null;
     }
 
     static private String invalidFieldError(String field){
