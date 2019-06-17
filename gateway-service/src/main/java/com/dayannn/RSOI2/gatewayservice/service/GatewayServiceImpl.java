@@ -273,7 +273,7 @@ public class GatewayServiceImpl implements GatewayService {
         } catch (JSONException e) {
             logger.error(jsonParsingError());
         }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(result.toString());
     }
 
     private double recalcAverageRating(HttpResponse response) throws IOException, JSONException {
