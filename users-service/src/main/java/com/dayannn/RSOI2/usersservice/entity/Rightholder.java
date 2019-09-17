@@ -1,5 +1,6 @@
 package com.dayannn.RSOI2.usersservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -21,6 +22,7 @@ public class Rightholder {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "rightholder")
+    @JsonManagedReference
     private List<Artist> artists;
 
     public Long getId() {

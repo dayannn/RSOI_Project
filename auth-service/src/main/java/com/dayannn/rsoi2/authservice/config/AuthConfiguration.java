@@ -11,15 +11,19 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableAuthorizationServer
 public class AuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
-	private static final int AUTH_TOKEN_VALIDITY_SECONDS = 60*5;
+	private static final int AUTH_TOKEN_VALIDITY_SECONDS = 60*60*24;
     private static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60*60*24*30;
 
 	@Autowired
@@ -63,20 +67,34 @@ public class AuthConfiguration extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) {
-	    endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager)
-                .accessTokenConverter(defaultAccessTokenConverter())
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
+        endpoints
+                .tokenStore(tokenStore())
+                .tokenEnhancer(tokenEnhancerChain)
+                .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService);
+//
+//	    endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager)
+//                .accessTokenConverter(accessTokenConverter())
+//				.tokenEnhancer(new CustomTokenEnhancer())
+//                .userDetailsService(userDetailsService);
     }
 
 	@Bean
 	public TokenStore tokenStore(){
-		return new JwtTokenStore(defaultAccessTokenConverter());
+		return new JwtTokenStore(accessTokenConverter());
 	}
 
-	@Bean
-	public JwtAccessTokenConverter defaultAccessTokenConverter() {
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-		converter.setSigningKey("123");
-		return converter;
-	}
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        CustomJwtAccessTokenConverter accessTokenConverter = new CustomJwtAccessTokenConverter();
+        accessTokenConverter.setSigningKey("123");
+        return accessTokenConverter;
+    }
+
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+        return new CustomTokenEnhancer();
+    }
 }

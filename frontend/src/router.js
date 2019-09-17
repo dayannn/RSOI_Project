@@ -44,15 +44,15 @@ export default new Router({
           //  beforeEnter: ifAuthenticated
         },
         {
-            path: '/books',
-            name: 'books',
-            component: () => import('./views/Books.vue'),
+            path: '/playlists',
+            name: 'playlists',
+            component: () => import('./views/Playlists.vue'),
          //   beforeEnter: ifAuthenticated
         },
         {
-            path: '/book/:id',
-            name: 'book',
-            component: () => import('./views/Book.vue'),
+            path: '/playlist/:id',
+            name: 'playlist',
+            component: () => import('./views/Playlist.vue'),
           //  beforeEnter: ifAuthenticated
         },
         {

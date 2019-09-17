@@ -6,7 +6,7 @@
             </router-link>
         </h1>
         <div class="header-right">
-            <router-link to="/books">Книги</router-link>
+            <router-link to="/playlists">Плейлисты</router-link>
             <router-link to="/users">Пользователи</router-link>
             <router-link to="/about">О сайте</router-link>
             <b-button

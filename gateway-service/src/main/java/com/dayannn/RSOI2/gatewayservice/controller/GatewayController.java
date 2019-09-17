@@ -2,6 +2,7 @@ package com.dayannn.RSOI2.gatewayservice.controller;
 
 import com.dayannn.RSOI2.gatewayservice.service.GatewayService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
@@ -71,6 +74,30 @@ public class GatewayController {
 
         gatewayService.addUser(user);
         return ResponseEntity.ok("");
+    }
+
+    @PostMapping(path = "playlists")
+    public ResponseEntity addPlaylist(@RequestBody String playlist, @RequestHeader("Authorization") String token) throws IOException{
+        logger.info("[POST] /playlists\n ", playlist);
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.createPlaylist(playlist);
+    }
+
+    @DeleteMapping(path = "playlists/{id}")
+    public ResponseEntity deletePlaylist(@PathVariable Long id, @RequestHeader("Authorization") String token) throws IOException{
+        logger.info("[DELETE] /playlists/" + id);
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.deletePlaylist(id);
     }
 
     @GetMapping(path = "users/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -163,11 +190,66 @@ public class GatewayController {
         return gatewayService.deleteReview(reviewId);
     }
 
+    @GetMapping(value = "/playlists")
+    public ResponseEntity getUserPlaylists(@RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /playlists/");
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        } else {
+            String username = getUsernameFromResponse(response.getEntity());
+            if (username == null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("error getting username from token");
+            }
+            return gatewayService.getPlaylists(username);
+        }
+    }
+
+    @GetMapping(value = "/playlist/{id}")
+    public ResponseEntity getPlaylistById(@PathVariable Long id,
+                                          @RequestHeader ("Authorization") String token)
+            throws IOException {
+        logger.info("[GET] /playlist/" + id);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        } else {
+            String username = getUsernameFromResponse(response.getEntity());
+            if (username == null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("error getting username from token");
+            }
+            return gatewayService.getPlaylist(id);
+        }
+    }
+
+
+    private String getUsernameFromResponse(HttpEntity entity) throws IOException {
+        String resp = EntityUtils.toString(entity);
+        String result = null;
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(resp);
+            result = obj.getString("user_name");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return result;
+    }
+
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestParam(value = "username") String username,
                                 @RequestParam(value = "password") String password,
                                 @RequestHeader("Authorization") String clientCred) throws IOException{
-        logger.info("[GET] /login" +
+        logger.info("[POST] /login" +
                 " username=" + username +
                 ", password= " + password +
                 ", credentials= " + clientCred);
@@ -191,6 +273,14 @@ public class GatewayController {
             logger.error("Error parsing response ", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }
+    }
+
+    @GetMapping(path = "/user_id/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getUserId(@PathVariable(value = "username") String username,
+                                    @RequestHeader("Authorization") String clientCred) throws IOException {
+        logger.info("[GET] /user_id" +
+                " username=" + username);
+        return gatewayService.getUserId(username, clientCred);
     }
 
     @GetMapping(path = "/oauth/login", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,7 @@
 package com.dayannn.RSOI2.usersservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -16,6 +18,7 @@ public class Artist {
 
     @ManyToOne
     @JoinColumn(name = "rightholder_id")
+    @JsonBackReference
     private Rightholder rightholder;
 
     @Column(name = "name")
@@ -26,6 +29,7 @@ public class Artist {
     private String info;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "artist")
+    @JsonManagedReference
     private List<Album> albums;
 
     public Long getId() {

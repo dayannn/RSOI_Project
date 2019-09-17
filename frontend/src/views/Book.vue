@@ -1,12 +1,12 @@
 <template>
     <div style="padding-top: 75px; padding-bottom: 25px">
         <div class="card shadow" style="width: 60%; margin: auto; padding: 20px; text-align: left">
-            <h4 class="card-title"><b>Рецензии на книгу «{{book.name}}»</b></h4>
-            <h5><i>{{book.author}}</i></h5>
+            <h4 class="card-title"><b>Рецензии на книгу «{{playlist.name}}»</b></h4>
+            <h5><i>{{playlist.author}}</i></h5>
             <br/>
             <b-row>
                 <b-col cols="3">
-                    <img src="../assets/book.svg" width="120px" alt="Book cover" style="background: #f5f5f5;">
+                    <img src="../assets/playlist.svg" width="120px" alt="Cover" style="background: #f5f5f5;">
                     <br/>
                 </b-col>
                 <b-col cols="9">
@@ -16,13 +16,13 @@
                                 <star-rating v-if="this.renderStars" v-bind="starsConfig"/>
                             </b-col>
                             <b-col cols="8" style="text-align: right">
-                                {{book.reviewsNum}} рецензий
+                                {{playlist.reviewsNum}} рецензий
                             </b-col>
                         </b-row>
                         <br/>
                         <b-row>
                             <b-col cols="3"><b>Страниц:</b></b-col>
-                            <b-col>{{book.pagesNum}}</b-col>
+                            <b-col>{{playlist.pagesNum}}</b-col>
                         </b-row>
                         <b-row>
                             <b-col cols="3"><b>ISBN:</b></b-col>
@@ -42,7 +42,7 @@
             <hr style="color: #cfcfcf; size: 2px; margin: 0"/>
             <b-row class="card-content">
                 <b-col>
-                    <AddReviewForm v-bind:book="book" v-on:review-added="reviewAdded"/>
+                    <AddReviewForm v-bind:playlist="playlist" v-on:review-added="reviewAdded"/>
                 </b-col>
             </b-row>
         </div>
@@ -62,7 +62,7 @@
 
             <b-row class="card-content">
                 <div v-bind:key="review.id" v-for="review in reviews">
-                    <ReviewItem v-bind:review="review" v-bind:book="book" v-on:review-deleted="reviewDeleted"/>
+                    <ReviewItem v-bind:review="review" v-bind:playlist="playlist" v-on:review-deleted="reviewDeleted"/>
                 </div>
             </b-row>
         </div>
@@ -75,7 +75,7 @@
     import ReviewItem from '../components/ReviewItem';
     import AddReviewForm from '../components/AddReviewForm';
     export default {
-        name:"Book",
+        name:"Playlist",
         components: {StarRating, ReviewItem, AddReviewForm},
         computed:{
             pageLink(){
@@ -103,10 +103,10 @@
 
                 this.renderStars = false;
 
-                axios.get("/api/book/" + this.$route.params.id)
+                axios.get("/api/playlist/" + this.$route.params.id)
                     .then(res => {
-                        this.book = res.data;
-                        this.starsConfig.rating = Number((this.book.rating).toFixed(2));
+                        this.playlist = res.data;
+                        this.starsConfig.rating = Number((this.playlist.rating).toFixed(2));
                         this.renderStars = true;
                     })
             },

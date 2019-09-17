@@ -3,7 +3,11 @@ import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../actions/
 import axios from 'axios'
 import store from '../../store' // your vuex store
 
-const state = { token: localStorage.getItem('user-token') || '', status: '', hasLoadedOnce: false };
+const state = {
+  token: localStorage.getItem('user-token') || '',
+  status: '',
+  hasLoadedOnce: false
+};
 
 const getters = {
   isAuthenticated: state => !!state.token,
@@ -28,8 +32,16 @@ const actions = {
       axios.post('api/login', data, config)
       .then(resp => {
 
-        localStorage.setItem('user-token', resp.data);
+        const token = resp.data;
+        localStorage.setItem('user-token', token);
+        axios.defaults.headers.common['Authorization'] = token;
         // axios.defaults.headers.common['Authorization'] = resp.token
+
+        // axios.get('api/user_id/' + user.username, config).then(
+        //     resp => {
+        //       localStorage.setItem('user-id', resp.data.user_id);
+        //     }
+        // );
 
         commit(AUTH_SUCCESS, resp);
         resolve(resp);
@@ -46,6 +58,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(AUTH_LOGOUT);
       localStorage.removeItem('user-token');
+ //       localStorage.removeItem('user-id');
+      delete axios.defaults.headers.common['Authorization'];
       resolve()
     })
   }

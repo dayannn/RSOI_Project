@@ -14,15 +14,20 @@ Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VueFilterDateFormat);
 
+//axios.defaults.headers.common['Authorization'] = localStorage.getItem('user-token');
+// (function() {
+//     const token = localStorage.getItem('user-token');
+//     if (token) {
+//         axios.defaults.headers.common['Authorization'] = token;
+//     } else {
+//         axios.defaults.headers.common['Authorization'] = "";
+//     }
+// })();
 
-(function() {
-    const token = localStorage.getItem('user-token');
-    if (token) {
-        axios.defaults.headers.common['Authorization'] = token;
-    } else {
-        axios.defaults.headers.common['Authorization'] = "";
-    }
-})();
+const token = localStorage.getItem('user-token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = token
+}
 
 new Vue({
   router,

@@ -51,7 +51,7 @@
                         this.errorText = '';
                     })
                     .catch(err => {
-                        this.errorText="Ошибка входа: неверный логин или пароль";
+                        this.errorText="Ошибка входа";
                         console.log(err);
                     })
             }

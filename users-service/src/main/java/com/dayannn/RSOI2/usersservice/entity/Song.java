@@ -1,6 +1,7 @@
 package com.dayannn.RSOI2.usersservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -17,7 +18,14 @@ public class Song {
 
     @ManyToOne
     @JoinColumn(name = "album_id")
+    @JsonBackReference
     private Album album;
+
+    @Transient
+    private String artistName;
+
+    @Transient
+    private Long artistId;
 
     @Column(name = "name")
     private String name;
@@ -43,6 +51,14 @@ public class Song {
 
     public void setAlbum(Album album) {
         this.album = album;
+    }
+
+    public Long getArtistId() {
+        return album.getArtist().getId();
+    }
+
+    public String getArtistName() {
+        return album.getArtist().getName();
     }
 
     public String getName() {

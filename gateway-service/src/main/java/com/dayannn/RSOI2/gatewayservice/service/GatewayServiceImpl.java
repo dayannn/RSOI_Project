@@ -77,7 +77,6 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     public String getUsers() throws IOException{
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(USERS_SERVICE_URL + "/users/");
         HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
 
@@ -164,6 +163,27 @@ public class GatewayServiceImpl implements GatewayService {
         request.addHeader("content-type", "application/json");
         request.setEntity(params);
         authAndExecute(USERS_SERVICE_URL, request, usersToken);
+    }
+
+    @Override
+    public ResponseEntity createPlaylist(String playlist) throws IOException {
+        HttpPost request = new HttpPost(USERS_SERVICE_URL + "/playlists");
+        StringEntity entity = new StringEntity(playlist);
+        request.addHeader("content-type", "application/json");
+        request.setEntity(entity);
+
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+        return ResponseEntity.status(HttpStatus.SC_OK).
+                body(EntityUtils.toString(response.getEntity()));
+    }
+
+    @Override
+    public ResponseEntity deletePlaylist(Long id) throws IOException {
+        HttpDelete request = new HttpDelete(USERS_SERVICE_URL + "/playlists/" + id);
+
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+        return ResponseEntity.status(HttpStatus.SC_OK).
+                body(EntityUtils.toString(response.getEntity()));
     }
 
 
@@ -410,42 +430,50 @@ public class GatewayServiceImpl implements GatewayService {
 
         String encodedCredentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
-        request = new HttpGet(host + "/oauth/check_token?token=" + gatewayToken); // not the token i need
+        request = new HttpGet(host + "/oauth/check_token?token=" + token); // not the token i need
         response = tryGetResponse(request, "Basic", encodedCredentials);
 
         if (response.getStatusLine().getStatusCode() == 400
                 || response.getStatusLine().getStatusCode() == 401
                 || response.getStatusLine().getStatusCode() == 403) {
-            HttpResponse httpResponse = requestToken(host + "/oauth/token?grant_type=client_credentials", encodedCredentials);
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
-                return httpResponse;
-            }
-            else {
-                try {
-                    JSONObject p = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-                    gatewayToken = p.getString("access_token");
-                } catch (JSONException e) {
-                    logger.error("Error parsing response ", e);
-                    return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
-                }
-            }
-            request = new HttpGet(host + "/oauth/check_token?token=" + gatewayToken);
-            response = tryGetResponse(request, "Basic", encodedCredentials);
+            response.setStatusCode(401);
         }
 
-        try {
-            JSONObject p = new JSONObject(EntityUtils.toString(response.getEntity()));
-            boolean active = p.getBoolean("active");
-            if (active) {
-                return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, null);
-            }
-        } catch (JSONException e) {
-            logger.error("Error parsing json ", e);
-            return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
-        }
+        return response;
 
-        logger.error("Unchecked error while checking token");
-        return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_FORBIDDEN, null);
+//        if (response.getStatusLine().getStatusCode() == 400
+//                || response.getStatusLine().getStatusCode() == 401
+//                || response.getStatusLine().getStatusCode() == 403) {
+//            HttpResponse httpResponse = requestToken(host + "/oauth/token?grant_type=client_credentials", encodedCredentials);
+//            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
+//                return httpResponse;
+//            }
+//            else {
+//                try {
+//                    JSONObject p = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
+//                    gatewayToken = p.getString("access_token");
+//                } catch (JSONException e) {
+//                    logger.error("Error parsing response ", e);
+//                    return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
+//                }
+//            }
+//            request = new HttpGet(host + "/oauth/check_token?token=" + token);
+//            response = tryGetResponse(request, "Basic", encodedCredentials);
+//        }
+//
+//        try {
+//            JSONObject p = new JSONObject(EntityUtils.toString(response.getEntity()));
+//            boolean active = p.getBoolean("active");
+//            if (active) {
+//                return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, null);
+//            }
+//        } catch (JSONException e) {
+//            logger.error("Error parsing json ", e);
+//            return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_INTERNAL_SERVER_ERROR, null);
+//        }
+//
+//        logger.error("Unchecked error while checking token");
+//        return responseFactory.newHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_FORBIDDEN, null);
     }
 
     private HttpResponse tryGetResponse(HttpUriRequest request, String authType, String credentials) throws IOException {
@@ -550,14 +578,44 @@ public class GatewayServiceImpl implements GatewayService {
             request2.setEntity(entity);
             HttpResponse response2 = authAndExecute(USERS_SERVICE_URL, request2, usersToken);
 
-            response.getStatusLine();
+            return ResponseEntity.status(HttpStatus.SC_OK).
+                    body(EntityUtils.toString(response2.getEntity()));
 
         } catch (JSONException ex){
             return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).body(jsonParsingError());
         }
-
-        return null;
     }
+
+    @Override
+    public ResponseEntity getUserId(String username, String clientCredentials) throws IOException {
+        HttpGet request = new HttpGet(AUTH_SERVICE_URL + "/user/user_id/" + username);
+        request.addHeader("content-type", "application/json");
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(request);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity getPlaylists(String username) throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/" + username + "/playlists");
+        request.addHeader("content-type", "application/json");
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity getPlaylist(Long id) throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/playlists/" + id);
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+    }
+
 
     static private String invalidFieldError(String field){
         return "Invalid field " + field;

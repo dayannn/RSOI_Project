@@ -78,23 +78,56 @@ public class UsersServiceController {
         return usersService.findUserByLogin(login);
     }
 
-    @DeleteMapping(value = "users/{id}")
+    @DeleteMapping(value = "/users/{id}")
     public void deleteUserById(@PathVariable Long id){
         logger.info("[DELETE] /users/" + id);
         usersService.deleteUser(id);
     }
 
     @PostMapping(value = "/playlists")
-    public void createPlaylist(@RequestBody Playlist playlist){
-        usersService.createPlaylist(playlist);
+    public Playlist createPlaylist(@RequestBody Playlist playlist){
         logger.info("[POST] /playlist", playlist);
+        return usersService.createPlaylist(playlist);
     }
 
-    @DeleteMapping(value = "playlists/{id}")
+    @GetMapping(value = "/playlists/{id}")
+    public Playlist getPlaylist(@PathVariable Long id){
+        logger.info("[GET] /playlists/" + id);
+        return usersService.getPlaylist(id);
+    }
+
+    @DeleteMapping(value = "/playlists/{id}")
     public void deletePlaylistById(@PathVariable Long id){
         logger.info("[DELETE] /playlists/" + id);
         usersService.deletePlaylist(+id);
     }
+
+    @PostMapping(value = "/playlists/{id}/{song_id}")
+    public ResponseEntity addSong(@PathVariable Long id, @PathVariable Long song_id){
+        logger.info("[POST] /playlist/" + id + "/" + song_id);
+
+        return usersService.addSong(id, song_id);
+    }
+
+    @DeleteMapping(value = "/playlists/{id}/{song_id}")
+    public ResponseEntity deleteSong(@PathVariable Long id, @PathVariable Long song_id){
+        logger.info("[DELETE] /playlists/" + id);
+
+        return usersService.deleteSong(id, song_id);
+    }
+
+    @GetMapping(value = "/songs")
+    public ResponseEntity getAllSongs(){
+        logger.info("[GET] /songs");
+        return usersService.getAllSongs();
+    }
+
+    @GetMapping(value = "/{username}/playlists")
+    public List<Playlist> getPlaylists(@PathVariable String username){
+        logger.info("[GET] /" + username + "/playlists");
+        return usersService.getPlaylists(username);
+    }
+
 
     @GetMapping(value = "/healthcheck")
     public ResponseEntity healthCheck(){

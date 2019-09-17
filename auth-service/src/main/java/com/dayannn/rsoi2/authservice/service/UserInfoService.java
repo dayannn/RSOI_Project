@@ -1,8 +1,14 @@
 package com.dayannn.RSOI2.authservice.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +27,19 @@ public class UserInfoService {
 		short enabled = 1;
 		return userDatailsRepository.findByUserNameAndEnabled(userName, enabled);
 	}
+
+	public ResponseEntity getUserIdByUserName(String userName) {
+	    try {
+            short enabled = 1;
+            UserInfo user = userDatailsRepository.findByUserNameAndEnabled(userName, enabled);
+            JSONObject userToSave = new JSONObject();
+            userToSave.put("user_id", user.getId());
+
+            return ResponseEntity.status(HttpStatus.SC_OK).body(userToSave.toString());
+        } catch (JSONException e) {
+            return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).body("Error parsing json");
+        }
+    }
 
 	public List<UserInfo> getAllActiveUserInfo() {
 		return userDatailsRepository.findAllByEnabled((short) 1);

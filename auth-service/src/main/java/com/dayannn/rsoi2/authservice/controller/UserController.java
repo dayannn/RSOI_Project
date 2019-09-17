@@ -1,5 +1,6 @@
 package com.dayannn.RSOI2.authservice.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class UserController {
 	@PostMapping("/user")
 	public UserInfo addUser(@RequestBody UserInfo userRecord) {
 		return userService.addUser(userRecord);
+	}
+
+	@GetMapping("/user/{username}")
+	public ResponseEntity getUserId(@PathVariable String username) throws UnsupportedEncodingException {
+		return userService.getUserIdByUserName(username);
 	}
 
 	@PutMapping("/user/{id}")

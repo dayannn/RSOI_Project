@@ -87,6 +87,11 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
+    public Playlist getPlaylist(Long id) {
+        return playlistRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public Playlist findPlaylistById(Long id) {
         return playlistRepository.findById(id).orElse(null);
     }
@@ -104,6 +109,27 @@ public class UsersServiceImpl implements UsersService{
     @Override
     public Song findSongById(Long id) {
         return songRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public ResponseEntity addSong(Long id, Long song_id) {
+        Playlist playlist = playlistRepository.getOne(id);
+        playlist.getSongs().add(songRepository.getOne(song_id));
+        playlistRepository.save(playlist);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity deleteSong(Long id, Long song_id) {
+        Playlist playlist = playlistRepository.getOne(id);
+        playlist.getSongs().remove(songRepository.getOne(song_id));
+        playlistRepository.save(playlist);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity getAllSongs() {
+        return ResponseEntity.ok(songRepository.findAll());
     }
 
     @Override
@@ -146,5 +172,9 @@ public class UsersServiceImpl implements UsersService{
         return ResponseEntity.ok("The usersService is up");
     }
 
-
+    @Override
+    public List<Playlist> getPlaylists(String username) {
+        User user = userRepository.findByLogin(username);
+        return playlistRepository.findByUser(user);
+    }
 }

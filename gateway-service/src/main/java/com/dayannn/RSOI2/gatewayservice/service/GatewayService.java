@@ -19,6 +19,8 @@ public interface GatewayService {
     String getReviewsForBook(Long bookId, PageRequest p) throws IOException;
     String getBookById(Long bookId) throws IOException;
     void addUser(String user) throws IOException;
+    ResponseEntity createPlaylist(String playlist) throws IOException;
+    ResponseEntity deletePlaylist(Long id) throws IOException;
     ResponseEntity createReview(String review) throws IOException;
     ResponseEntity deleteReview(Long reviewId) throws IOException;
     void deleteUser(Long id) throws IOException;
@@ -27,4 +29,7 @@ public interface GatewayService {
     String oauthGetCode(String host, String client_id, String redirect_uri, String response_type) throws IOException;
     String oauthExchangeCode(String host, String code, String redirect_uri, String client_cred) throws IOException;
     ResponseEntity registerUser(String user) throws IOException;
+    ResponseEntity getUserId(String username, String clientCredentials) throws IOException;
+    ResponseEntity getPlaylists(String username) throws IOException;
+    ResponseEntity getPlaylist(Long id) throws IOException;
 }
