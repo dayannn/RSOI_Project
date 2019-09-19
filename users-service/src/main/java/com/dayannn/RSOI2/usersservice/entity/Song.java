@@ -21,11 +21,11 @@ public class Song {
     @JsonBackReference
     private Album album;
 
-    @Transient
-    private String artistName;
-
-    @Transient
-    private Long artistId;
+//    @Transient
+//    private String artistName;
+//
+//    @Transient
+//    private Long artistId;
 
     @Column(name = "name")
     private String name;
@@ -103,13 +103,13 @@ public class Song {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Song{" +
-                "id=" + id +
-                ", album=" + album +
-                ", name='" + name + '\'' +
-                ", filePath='" + filePath + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Song{" +
+//                "id=" + id +
+//                ", album=" + album +
+//                ", name='" + name + '\'' +
+//                ", filePath='" + filePath + '\'' +
+//                '}';
+//    }
 }

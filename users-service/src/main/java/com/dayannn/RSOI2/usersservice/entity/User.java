@@ -32,6 +32,10 @@ public class User {
     @JsonManagedReference
     private List<Playlist> playlists;
 
+    public void setId(Long Id){
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -106,15 +110,15 @@ public class User {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", externalId=" + externalId +
-                ", login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", playlists=" + playlists +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "id=" + id +
+//                ", externalId=" + externalId +
+//                ", login='" + login + '\'' +
+//                ", name='" + name + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", playlists=" + playlists +
+//                '}';
+//    }
 }

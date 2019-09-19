@@ -79,13 +79,13 @@ public class Rightholder {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Rightholder{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", artists=" + artists +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Rightholder{" +
+//                "id=" + id +
+//                ", login='" + login + '\'' +
+//                ", name='" + name + '\'' +
+//                ", artists=" + artists +
+//                '}';
+//    }
 }

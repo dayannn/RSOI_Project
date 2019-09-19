@@ -2,6 +2,7 @@ package com.dayannn.RSOI2.gatewayservice.service;
 
 import com.dayannn.RSOI2.gatewayservice.jedis.JedisManager;
 import com.dayannn.RSOI2.gatewayservice.jedis.WorkThread;
+import com.sun.jndi.toolkit.url.UrlUtil;
 import org.apache.http.*;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpDelete;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.util.HtmlUtils;
 import redis.clients.jedis.Jedis;
 
 import java.io.BufferedReader;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -44,6 +47,7 @@ public class GatewayServiceImpl implements GatewayService {
     final private String BOOKS_SERVICE_URL = "http://localhost:8071";
     final private String USERS_SERVICE_URL = "http://localhost:8072";
     final private String AUTH_SERVICE_URL = "http://localhost:8081";
+    final private String AUDIO_SERVICE_PATH = "http://localhost:8090";
 
     private String gatewayToken = "";
     private String booksToken = "";
@@ -166,14 +170,14 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     @Override
-    public ResponseEntity createPlaylist(String playlist) throws IOException {
-        HttpPost request = new HttpPost(USERS_SERVICE_URL + "/playlists");
-        StringEntity entity = new StringEntity(playlist);
+    public ResponseEntity createPlaylist(String username, String name) throws IOException {
+        HttpPost request = new HttpPost(USERS_SERVICE_URL + "/playlists/" + username);
+        StringEntity entity = new StringEntity(name);
         request.addHeader("content-type", "application/json");
         request.setEntity(entity);
 
         HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
-        return ResponseEntity.status(HttpStatus.SC_OK).
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).
                 body(EntityUtils.toString(response.getEntity()));
     }
 
@@ -594,7 +598,7 @@ public class GatewayServiceImpl implements GatewayService {
         HttpResponse response = httpClient.execute(request);
 
         String responseBody = EntityUtils.toString(response.getEntity());
-        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
     }
 
     @Override
@@ -604,7 +608,7 @@ public class GatewayServiceImpl implements GatewayService {
         HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
 
         String responseBody = EntityUtils.toString(response.getEntity());
-        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
     }
 
     @Override
@@ -613,9 +617,35 @@ public class GatewayServiceImpl implements GatewayService {
         HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
 
         String responseBody = EntityUtils.toString(response.getEntity());
-        return ResponseEntity.status(HttpStatus.SC_OK).body(responseBody);
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
     }
 
+    @Override
+    public HttpResponse play(String path) throws IOException {
+        HttpGet request = new HttpGet(AUDIO_SERVICE_PATH + "/audiosrc/" + path);
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(request);
+
+        return response;
+    }
+
+    @Override
+    public ResponseEntity deleteSongFromPlaylist(Long playlistId, Long songId) throws IOException {
+        HttpDelete request = new HttpDelete(USERS_SERVICE_URL + "/playlists/" + playlistId + "/" + songId);
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity searchSongs(String name) throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/search?name=" + URLEncoder.encode(name, StandardCharsets.UTF_8.toString()));
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
 
     static private String invalidFieldError(String field){
         return "Invalid field " + field;

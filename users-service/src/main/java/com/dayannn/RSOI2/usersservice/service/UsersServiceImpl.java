@@ -1,8 +1,13 @@
 package com.dayannn.RSOI2.usersservice.service;
 
+import com.dayannn.RSOI2.usersservice.controller.UsersServiceController;
 import com.dayannn.RSOI2.usersservice.entity.*;
 import com.dayannn.RSOI2.usersservice.exception.UserNotFoundException;
 import com.dayannn.RSOI2.usersservice.repository.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +23,7 @@ public class UsersServiceImpl implements UsersService{
     private final RightholderRepository rightholderRepository;
     private final SongRepository songRepository;
 
+    private Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
 
     @Autowired
     public UsersServiceImpl(UserRepository userRepository, PlaylistRepository playlistRepository,
@@ -87,6 +93,13 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
+    public Playlist createPlaylist(Playlist playlist, String username) {
+        User user = userRepository.findByLogin(username);
+        playlist.setUser(user);
+        return playlistRepository.saveAndFlush(playlist);
+    }
+
+    @Override
     public Playlist getPlaylist(Long id) {
         return playlistRepository.findById(id).orElse(null);
     }
@@ -103,7 +116,7 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public Song addSong(Song song) {
-        return songRepository.save(song);
+        return songRepository.saveAndFlush(song);
     }
 
     @Override
@@ -121,9 +134,12 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public ResponseEntity deleteSong(Long id, Long song_id) {
+        logger.info("inside deleteSong in  UsersService");
         Playlist playlist = playlistRepository.getOne(id);
+        logger.info("playlist= " + playlist.getSongs().toString());
         playlist.getSongs().remove(songRepository.getOne(song_id));
-        playlistRepository.save(playlist);
+        logger.info("playlist after delete = " + playlist.getSongs().toString());
+        playlistRepository.saveAndFlush(playlist);
         return ResponseEntity.ok().build();
     }
 
@@ -139,7 +155,7 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public Artist createArtst(Artist artist) {
-        return artistRepository.save(artist);
+        return artistRepository.saveAndFlush(artist);
     }
 
     @Override
@@ -154,7 +170,7 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public Album createAlbum(Album album) {
-        return albumRepository.save(album);
+        return albumRepository.saveAndFlush(album);
     }
 
     @Override
@@ -170,6 +186,11 @@ public class UsersServiceImpl implements UsersService{
     @Override
     public ResponseEntity healthCheck() {
         return ResponseEntity.ok("The usersService is up");
+    }
+
+    @Override
+    public List<Song> search(String name) {
+        return songRepository.findByNameIgnoreCaseContaining(name);
     }
 
     @Override

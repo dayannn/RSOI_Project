@@ -1,16 +1,30 @@
 <template>
-    <div class = "song-item shadow" style="margin-bottom: 10px">
-        <b-button class="btn btn-info btn-sm shadowed-button" style="margin-right: 10px">Play</b-button>
-        <b-button class="btn btn-info btn-sm shadowed-button" style="margin-right: 10px">Stop</b-button>
-        <strong>{{song.artistName}}</strong> - {{song.name}}<br/>
+    <div class = "song-item shadow" style="margin-bottom: 10px; padding-top: 10px">
+        <b-button class="btn btn-m shadowed-button" style="float: right; margin-right: 10px" @click="deleteSong">X</b-button>
+        <strong style="padding-left: 20px">{{song.artistName}}</strong> - {{song.name}}<br/>
+        <audio
+                controls
+                :src="basic_url + this.song.filePath">
+            Your browser does not support the
+            <code>audio</code> element.
+        </audio>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
     export default{
         name: "SongItem",
         props: ["song"],
         methods:{
+            deleteSong(){
+                this.$emit('del-song-from-playlist', this.song.id)
+            }
+        },
+        data() {
+            return {
+                basic_url: "http://localhost:8088/audiosrc"
+            }
         }
     }
 </script>

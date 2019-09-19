@@ -19,6 +19,7 @@ public interface UsersService {
     List<Rightholder> getAllRightholders();
     void deleteRightholder(Long id);
     Playlist createPlaylist(Playlist playlist);
+    Playlist createPlaylist(Playlist playlist, String username);
     Playlist getPlaylist(Long id);
     Playlist findPlaylistById(Long id);
     void deletePlaylist(Long id);
@@ -35,6 +36,7 @@ public interface UsersService {
     Album findAlbumById(Long id);
     void deleteAlbum(Long id);
     List<Playlist> getPlaylists(String username);
+    List<Song> search(String name);
 
     ResponseEntity healthCheck();
 }

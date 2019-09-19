@@ -96,16 +96,16 @@ public class Artist {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Artist{" +
-                "id=" + id +
-                ", rightholder=" + rightholder +
-                ", name='" + name + '\'' +
-                ", info='" + info + '\'' +
-                ", albums=" + albums +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Artist{" +
+//                "id=" + id +
+//                ", rightholder=" + rightholder +
+//                ", name='" + name + '\'' +
+//                ", info='" + info + '\'' +
+//                ", albums=" + albums +
+//                '}';
+//    }
 }
 
 

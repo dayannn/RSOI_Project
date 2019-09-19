@@ -77,15 +77,21 @@ public class GatewayController {
     }
 
     @PostMapping(path = "playlists")
-    public ResponseEntity addPlaylist(@RequestBody String playlist, @RequestHeader("Authorization") String token) throws IOException{
-        logger.info("[POST] /playlists\n ", playlist);
+    public ResponseEntity addPlaylist(@RequestBody String name, @RequestHeader("Authorization") String token) throws IOException{
+        logger.info("[POST] /playlists, name= ", name);
         HttpResponse response = isTokenValid(token);
         if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
             return ResponseEntity.status(response.getStatusLine().getStatusCode())
                     .body(EntityUtils.toString(response.getEntity()));
+        }else {
+            String username = getUsernameFromResponse(response.getEntity());
+            if (username == null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("error getting username from token");
+            }
+            return gatewayService.createPlaylist(username, name);
         }
-
-        return gatewayService.createPlaylist(playlist);
     }
 
     @DeleteMapping(path = "playlists/{id}")
@@ -321,5 +327,34 @@ public class GatewayController {
         logger.info("[POST] /register");
         gatewayService.registerUser(user);
         return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping(path = "/playlist/{playlistId}/{songId}")
+    public ResponseEntity deleteSongFromPlaylist(@PathVariable Long playlistId,
+                                                 @PathVariable Long songId,
+                                                 @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[DELETE] /playlist/" + playlistId + "/" + songId);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.deleteSongFromPlaylist(playlistId, songId);
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity searchSongs(@RequestParam String name,
+                                      @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /search?name=" + name);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.searchSongs(name);
     }
 }

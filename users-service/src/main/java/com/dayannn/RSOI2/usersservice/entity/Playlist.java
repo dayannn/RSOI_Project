@@ -85,14 +85,14 @@ public class Playlist {
                 .append(songs)
                 .toHashCode();
     }
-
-    @Override
-    public String toString() {
-        return "Playlist{" +
-                "id=" + id +
-                ", user=" + user +
-                ", name='" + name + '\'' +
-                ", songs=" + songs +
-                '}';
-    }
+//
+//    @Override
+//    public String toString() {
+//        return "Playlist{" +
+//                "id=" + id +
+//                ", user=" + user +
+//                ", name='" + name + '\'' +
+//                ", songs=" + songs +
+//                '}';
+//    }
 }

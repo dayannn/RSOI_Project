@@ -2,6 +2,14 @@
   <div id="app">
     <Header />
     <router-view/>
+    <b-modal
+            v-model="showError"
+            title="Ошибка"
+            hide-footer
+            centered
+    >
+        <label>{{errorMsg}}</label>
+    </b-modal>
   </div>
 </template>
 
@@ -14,16 +22,28 @@
       comments:{
           Header
       },
+      data(){
+          return{
+              showError: false,
+              errorMsg: ""
+          }
+      },
       created () {
-          axios.interceptors.response.use(undefined, function (err) {
-              return new Promise(function (resolve, reject) {
-                  if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-                      // if you ever get an unauthorized, logout the user
-                      this.$store.dispatch(AUTH_LOGOUT)
-                      // you can also redirect to /login if needed !
-                  }
-                  throw err;
-              });
+          axios.interceptors.response.use(
+              (response) => {
+                  return response;
+              },
+              function (err) {
+                    if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+                        // if you ever get an unauthorized, logout the user
+                        this.$store.dispatch(AUTH_LOGOUT)
+                        // you can also redirect to /login if needed !
+                    }
+                    if (err.status === 500){
+                        this.showError = true;
+                    }
+
+                  return Promise.reject(err.response);
           });
       }
   }

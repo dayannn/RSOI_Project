@@ -96,14 +96,14 @@ public class Album {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Album{" +
-                "id=" + id +
-                ", artist=" + artist +
-                ", name='" + name + '\'' +
-                ", info='" + info + '\'' +
-                ", songs=" + songs +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Album{" +
+//                "id=" + id +
+//                ", artist=" + artist +
+//                ", name='" + name + '\'' +
+//                ", info='" + info + '\'' +
+//                ", songs=" + songs +
+//                '}';
+//    }
 }

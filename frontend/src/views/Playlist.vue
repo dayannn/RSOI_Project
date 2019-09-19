@@ -5,7 +5,7 @@
         </div>
         <div class = "songs-panel">
             <div v-bind:key="song.id" v-for="song in playlist.songs" >
-                <SongItem v-bind:song="song"></SongItem>
+                <SongItem v-bind:song="song" v-on:del-song-from-playlist="deleteSong"></SongItem>
             </div>
         </div>
     </div>
@@ -24,6 +24,11 @@
                     .then(res => {
                         this.playlist = res.data;
                     })
+                    .catch(err => console.log(err));
+            },
+            deleteSong(id){
+                axios.delete("/api/playlist/" + this.$route.params.id + "/" + id)
+                    .then(this.updateData)
                     .catch(err => console.log(err));
             }
         },

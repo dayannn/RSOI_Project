@@ -84,10 +84,10 @@ public class UsersServiceController {
         usersService.deleteUser(id);
     }
 
-    @PostMapping(value = "/playlists")
-    public Playlist createPlaylist(@RequestBody Playlist playlist){
-        logger.info("[POST] /playlist", playlist);
-        return usersService.createPlaylist(playlist);
+    @PostMapping(value = "/playlists/{username}")
+    public Playlist createPlaylist(@RequestBody Playlist playlist, @PathVariable String username){
+        logger.info("[POST] /playlist/" + username, playlist);
+        return usersService.createPlaylist(playlist, username);
     }
 
     @GetMapping(value = "/playlists/{id}")
@@ -111,7 +111,7 @@ public class UsersServiceController {
 
     @DeleteMapping(value = "/playlists/{id}/{song_id}")
     public ResponseEntity deleteSong(@PathVariable Long id, @PathVariable Long song_id){
-        logger.info("[DELETE] /playlists/" + id);
+        logger.info("[DELETE] /playlists/" + id + "/" + song_id);
 
         return usersService.deleteSong(id, song_id);
     }
@@ -128,6 +128,11 @@ public class UsersServiceController {
         return usersService.getPlaylists(username);
     }
 
+    @GetMapping(value = "/search")
+    public List<Song> searchSongs(@RequestParam String name){
+        logger.info("[GET] /search>name=" + name);
+        return usersService.search(name);
+    }
 
     @GetMapping(value = "/healthcheck")
     public ResponseEntity healthCheck(){

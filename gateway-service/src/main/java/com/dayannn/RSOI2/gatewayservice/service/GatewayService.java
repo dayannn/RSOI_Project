@@ -19,7 +19,7 @@ public interface GatewayService {
     String getReviewsForBook(Long bookId, PageRequest p) throws IOException;
     String getBookById(Long bookId) throws IOException;
     void addUser(String user) throws IOException;
-    ResponseEntity createPlaylist(String playlist) throws IOException;
+    ResponseEntity createPlaylist(String username, String name) throws IOException;
     ResponseEntity deletePlaylist(Long id) throws IOException;
     ResponseEntity createReview(String review) throws IOException;
     ResponseEntity deleteReview(Long reviewId) throws IOException;
@@ -32,4 +32,7 @@ public interface GatewayService {
     ResponseEntity getUserId(String username, String clientCredentials) throws IOException;
     ResponseEntity getPlaylists(String username) throws IOException;
     ResponseEntity getPlaylist(Long id) throws IOException;
+    HttpResponse play(String path) throws IOException;
+    ResponseEntity deleteSongFromPlaylist(Long playlistId, Long songId) throws IOException;
+    ResponseEntity searchSongs(String name) throws IOException;
 }
