@@ -1,6 +1,6 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div class="container">
-        <h1>Ваши плейлисты</h1>
+        <h2 style="padding-top: 75px; margin-bottom: 20px"><strong>Мои плейлисты</strong></h2>
         <div class="card-group">
             <div class="playlists-list" v-bind:key="playlist.id" v-for="playlist in playlists">
                 <PlaylistItem  v-bind:playlist="playlist"/>
@@ -12,7 +12,6 @@
             <b-modal
                     v-model="showModal"
                     title="Добавить плейлист"
-                    hide-footer
                     centered
             >
                 <b-form-group

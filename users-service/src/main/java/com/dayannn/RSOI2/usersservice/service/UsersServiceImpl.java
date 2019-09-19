@@ -194,6 +194,21 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
+    public Artist getArtist(Long id) {
+        return artistRepository.getOne(id);
+    }
+
+    @Override
+    public Album getAlbum(Long id) {
+        return albumRepository.getOne(id);
+    }
+
+    @Override
+    public List<Artist> getArtists() {
+        return artistRepository.findAll();
+    }
+
+    @Override
     public List<Playlist> getPlaylists(String username) {
         User user = userRepository.findByLogin(username);
         return playlistRepository.findByUser(user);

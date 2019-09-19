@@ -7,7 +7,7 @@
                     class="shadow-sm"
                     v-model="searchString"
                     required
-                    placeholder="Введите название плейлиста"
+                    placeholder="Введите название песни"
                     style="margin-bottom: 20px">
             </b-form-input>
             <b-button class="btn btn-m shadowed-button"

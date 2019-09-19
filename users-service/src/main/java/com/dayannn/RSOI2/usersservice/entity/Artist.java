@@ -1,6 +1,7 @@
 package com.dayannn.RSOI2.usersservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "artist")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,6 +16,7 @@
 <script>
   import Header from "./components/layout/header";
   import axios from 'axios';
+  import {AUTH_LOGOUT} from "./store/actions/auth";
   export default {
       name:"app",
       components:{Header},
@@ -33,13 +34,21 @@
               (response) => {
                   return response;
               },
-              function (err) {
-                    if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+              (err) => {
+                  if (!err.response){
+                      return Promise.reject(err);
+                  }
+                    if (err.response.status === 401) {
                         // if you ever get an unauthorized, logout the user
-                        this.$store.dispatch(AUTH_LOGOUT)
+                        this.errorMsg = "Ваша сессия была завершена. Пожалуйста, зайдите в аккаунт заново";
+                        this.showError = true;
+                        this.$store.dispatch(AUTH_LOGOUT).then(() => this.$router.push('login'))
                         // you can also redirect to /login if needed !
-                    }
-                    if (err.status === 500){
+                    } else if (err.response.status === 500){
+                        this.errorMsg = "Произошла ошибка при соединении с сервером";
+                        this.showError = true;
+                    } else if (err.response.status === 503){
+                        this.errorMsg = "Операция временно недоступна";
                         this.showError = true;
                     }
 
@@ -58,5 +67,9 @@
   color: #333;
   background: #eeeeee;
   min-height: 100vh;
+}
+
+.toast-item{
+  z-index: 1;
 }
 </style>

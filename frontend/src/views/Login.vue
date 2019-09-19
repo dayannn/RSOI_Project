@@ -47,7 +47,7 @@
                 const { username, password } = this;
                 this.$store.dispatch(AUTH_REQUEST, { username, password })
                     .then(() => {
-                        this.$router.push('/');
+                        this.$router.push('/playlists');
                         this.errorText = '';
                     })
                     .catch(err => {

@@ -3,7 +3,7 @@
          v-on:mouseover="dropdownActive = true"
          v-on:mouseout="dropdownActive = false"
          style="margin-bottom: 10px; padding-top: 10px">
-        <strong style="padding-left: 20px">{{song.artistName}}</strong> - {{song.name}}<br/>
+        <router-link :to="artist_base_url + this.song.artistId" style="padding-left: 20px; color: #009999">{{song.artistName}}</router-link> - {{song.name}}<br/>
         <b-row>
             <b-col>
                 <audio
@@ -15,9 +15,11 @@
             </b-col>
             <b-col>
                 <b-dropdown :text="dropdownText" v-show="dropdownActive" style="float: right; margin-right: 30px">
-                    <b-dropdown-item v-bind:key="playlist.id" v-for="playlist in this.$parent.playlists">{{playlist.name}}</b-dropdown-item>
-                    <!--<b-dropdown-item @click="selectedItem='Another action'">Another action</b-dropdown-item>-->
-                    <!--<b-dropdown-item @click="selectedItem='Something else here'">Something else here</b-dropdown-item>-->
+                    <b-dropdown-item v-bind:key="playlist.id"
+                                     v-for="playlist in this.$parent.playlists"
+                                     v-on:click="addToPlaylist(playlist)"
+                    >
+                        {{playlist.name}}</b-dropdown-item>
                 </b-dropdown>
             </b-col>
         </b-row>
@@ -31,12 +33,26 @@
         name: "SongItem",
         props: ["song"],
         methods:{
+            addToPlaylist(playlist){
+                axios.post("/api/playlist/" + playlist.id + "/" + this.song.id)
+                    .then(this.makeToast("Песня \"" + this.song.name + "\" добавлена в плейлист \"" + playlist.name + "\""))
+                    .catch(err => console.log(err))
+            },
+            makeToast(text) {
+                this.$bvToast.toast(text, {
+                    title: 'Песня добавлена',
+                    autoHideDelay: 5000,
+                    appendToast: false,
+                    toastClass: 'toast-item'
+                })
+            }
         },
         data() {
             return {
                 basic_url: "http://localhost:8088/audiosrc",
                 dropdownText: "Добавить в плейлист",
-                dropdownActive: false
+                dropdownActive: false,
+                artist_base_url: "/artist/"
             }
         }
     }
@@ -51,5 +67,7 @@
         width: 70%;
         margin: auto;
     }
+
+
 
 </style>

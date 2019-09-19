@@ -37,6 +37,9 @@ public interface UsersService {
     void deleteAlbum(Long id);
     List<Playlist> getPlaylists(String username);
     List<Song> search(String name);
+    Artist getArtist(Long id);
+    Album getAlbum(Long id);
+    List<Artist> getArtists();
 
     ResponseEntity healthCheck();
 }

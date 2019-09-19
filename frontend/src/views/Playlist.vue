@@ -8,6 +8,9 @@
                 <SongItem v-bind:song="song" v-on:del-song-from-playlist="deleteSong"></SongItem>
             </div>
         </div>
+        <b-button class="btn btn-m shadowed-button"
+                  style="horiz-align: center;  margin-top: 20px"
+                  @click="deletePlaylist">Удалить плейлист</b-button>
     </div>
 </template>
 
@@ -30,7 +33,13 @@
                 axios.delete("/api/playlist/" + this.$route.params.id + "/" + id)
                     .then(this.updateData)
                     .catch(err => console.log(err));
+            },
+            deletePlaylist(){
+                axios.delete("/api/playlists/" + this.playlist.id)
+                    .then(() => this.$router.push("/playlists"))
+                    .catch(err => console.log(err));
             }
+
         },
         data(){
             return {

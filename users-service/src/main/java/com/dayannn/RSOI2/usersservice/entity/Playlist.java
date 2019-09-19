@@ -23,7 +23,7 @@ public class Playlist {
     @Column (name = "name")
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "playlist_song",
             //foreign key for EmployeeEntity in employee_car table
             joinColumns = @JoinColumn(name = "playlist_id"),

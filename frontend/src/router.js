@@ -50,9 +50,27 @@ export default new Router({
             beforeEnter: ifAuthenticated
         },
         {
+            path: '/artists',
+            name: 'artists',
+            component: () => import('./views/Artists.vue'),
+            beforeEnter: ifAuthenticated
+        },
+        {
             path: '/playlist/:id',
             name: 'playlist',
             component: () => import('./views/Playlist.vue'),
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/artist/:id',
+            name: 'artist',
+            component: () => import('./views/Artist.vue'),
+            beforeEnter: ifAuthenticated
+        },
+        {
+            path: '/album/:id',
+            name: 'album',
+            component: () => import('./views/Album.vue'),
             beforeEnter: ifAuthenticated
         },
         {

@@ -236,7 +236,6 @@ public class GatewayController {
         }
     }
 
-
     private String getUsernameFromResponse(HttpEntity entity) throws IOException {
         String resp = EntityUtils.toString(entity);
         String result = null;
@@ -344,6 +343,22 @@ public class GatewayController {
         return gatewayService.deleteSongFromPlaylist(playlistId, songId);
     }
 
+    @PostMapping(path = "/playlist/{playlistId}/{songId}")
+    public ResponseEntity addSongToPlaylist(@PathVariable Long playlistId,
+                                                 @PathVariable Long songId,
+                                                 @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[DELETE] /playlist/" + playlistId + "/" + songId);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.addSongToPlaylist(playlistId, songId);
+    }
+
+
     @GetMapping(path = "/search")
     public ResponseEntity searchSongs(@RequestParam String name,
                                       @RequestHeader ("Authorization") String token) throws IOException {
@@ -356,5 +371,46 @@ public class GatewayController {
         }
 
         return gatewayService.searchSongs(name);
+    }
+
+    @GetMapping(path = "/artist/{id}")
+    public ResponseEntity getArtist(@PathVariable Long id,
+                                      @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /artist/" + id);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.getArtist(id);
+    }
+
+    @GetMapping(path = "/album/{id}")
+    public ResponseEntity getAlbum(@PathVariable Long id,
+                                    @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /artist/" + id);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.getAlbum(id);
+    }
+
+    @GetMapping(path = "/artist")
+    public ResponseEntity getArtists(@RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /artist");
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.getArtists();
     }
 }

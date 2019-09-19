@@ -134,6 +134,24 @@ public class UsersServiceController {
         return usersService.search(name);
     }
 
+    @GetMapping(value = "/artist/{id}")
+    public Artist getArtist(@PathVariable Long id){
+        logger.info("[GET] /artist/" + id);
+        return usersService.getArtist(id);
+    }
+
+    @GetMapping(value = "/album/{id}")
+    public Album getAlbum(@PathVariable Long id){
+        logger.info("[GET] /album/" + id);
+        return usersService.getAlbum(id);
+    }
+
+    @GetMapping(value = "/artist")
+    public List<Artist> getArtist(){
+        logger.info("[GET] /artist");
+        return usersService.getArtists();
+    }
+
     @GetMapping(value = "/healthcheck")
     public ResponseEntity healthCheck(){
         logger.info("[GET] /healthcheck");

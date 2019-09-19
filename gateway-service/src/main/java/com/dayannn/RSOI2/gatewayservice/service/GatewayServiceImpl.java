@@ -639,8 +639,44 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     @Override
+    public ResponseEntity addSongToPlaylist(Long playlistId, Long songId) throws IOException {
+        HttpPost request = new HttpPost(USERS_SERVICE_URL + "/playlists/" + playlistId + "/" + songId);
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
+
+    @Override
     public ResponseEntity searchSongs(String name) throws IOException {
         HttpGet request = new HttpGet(USERS_SERVICE_URL + "/search?name=" + URLEncoder.encode(name, StandardCharsets.UTF_8.toString()));
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity getArtist(Long id) throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/artist/" + id);
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity getAlbum(Long id) throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/album/" + id);
+        HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
+
+        String responseBody = EntityUtils.toString(response.getEntity());
+        return ResponseEntity.status(response.getStatusLine().getStatusCode()).body(responseBody);
+    }
+
+    @Override
+    public ResponseEntity getArtists() throws IOException {
+        HttpGet request = new HttpGet(USERS_SERVICE_URL + "/artist");
         HttpResponse response = authAndExecute(USERS_SERVICE_URL, request, usersToken);
 
         String responseBody = EntityUtils.toString(response.getEntity());
