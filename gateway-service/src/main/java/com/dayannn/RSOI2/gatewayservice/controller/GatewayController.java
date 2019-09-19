@@ -373,6 +373,20 @@ public class GatewayController {
         return gatewayService.searchSongs(name);
     }
 
+    @GetMapping(path = "/artsearch")
+    public ResponseEntity searchArtists(@RequestParam String name,
+                                      @RequestHeader ("Authorization") String token) throws IOException {
+        logger.info("[GET] /artsearch?name=" + name);
+
+        HttpResponse response = isTokenValid(token);
+        if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK){
+            return ResponseEntity.status(response.getStatusLine().getStatusCode())
+                    .body(EntityUtils.toString(response.getEntity()));
+        }
+
+        return gatewayService.searchArtists(name);
+    }
+
     @GetMapping(path = "/artist/{id}")
     public ResponseEntity getArtist(@PathVariable Long id,
                                       @RequestHeader ("Authorization") String token) throws IOException {

@@ -36,6 +36,7 @@ public interface GatewayService {
     ResponseEntity deleteSongFromPlaylist(Long playlistId, Long songId) throws IOException;
     ResponseEntity addSongToPlaylist(Long playlistId, Long songId) throws IOException;
     ResponseEntity searchSongs(String name) throws IOException;
+    ResponseEntity searchArtists(String name) throws IOException;
     ResponseEntity getArtist(Long id) throws IOException;
     ResponseEntity getAlbum(Long id) throws IOException;
     ResponseEntity getArtists() throws IOException;

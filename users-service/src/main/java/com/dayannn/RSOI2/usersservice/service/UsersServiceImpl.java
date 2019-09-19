@@ -194,6 +194,11 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
+    public List<Artist> searchArtists(String name) {
+        return artistRepository.findByNameIgnoreCaseContaining(name);
+    }
+
+    @Override
     public Artist getArtist(Long id) {
         return artistRepository.getOne(id);
     }

@@ -130,8 +130,14 @@ public class UsersServiceController {
 
     @GetMapping(value = "/search")
     public List<Song> searchSongs(@RequestParam String name){
-        logger.info("[GET] /search>name=" + name);
+        logger.info("[GET] /search?name=" + name);
         return usersService.search(name);
+    }
+
+    @GetMapping(value = "/search_artists")
+    public List<Artist> searchArtists(@RequestParam String name){
+        logger.info("[GET] /search_artist?name=" + name);
+        return usersService.searchArtists(name);
     }
 
     @GetMapping(value = "/artist/{id}")

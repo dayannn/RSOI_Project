@@ -37,6 +37,7 @@ public interface UsersService {
     void deleteAlbum(Long id);
     List<Playlist> getPlaylists(String username);
     List<Song> search(String name);
+    List<Artist> searchArtists(String name);
     Artist getArtist(Long id);
     Album getAlbum(Long id);
     List<Artist> getArtists();
