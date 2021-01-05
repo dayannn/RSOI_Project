@@ -10,7 +10,7 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "auth0-js": "^9.11.3",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bootstrap-vue": "^2.0.1",
     "materialize-css": "^1.0.0",
     "vue": "^2.6.10",
